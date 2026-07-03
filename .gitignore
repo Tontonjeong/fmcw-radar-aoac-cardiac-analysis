@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# Results and biosignal data
+results/*
+!results/.gitkeep
+*.csv
+*.json
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.mat
+*.h5
+*.hdf5
+
+# Figures and large exports
+*.png
+*.jpg
+*.jpeg
+*.tiff
+*.bmp
+
+# Paper PDFs are excluded by default.
+# If the author has permission to distribute the paper, add it manually.
+*.pdf
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# STM32CubeIDE build artifacts
+Debug/
+Release/
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.o
+*.d
+
+# Arduino build artifacts
+build/
+*.tmp
+
+# To include selected documentation figures, add explicit exceptions such as:
+# !docs/figures/example_pipeline.png
