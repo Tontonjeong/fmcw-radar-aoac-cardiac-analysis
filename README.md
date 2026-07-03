@@ -28,6 +28,29 @@ This repository contains a research prototype for beat-wise cardiac mechanical e
 
 The study context is simultaneous ECG, SCG, and FMCW Radar acquisition for cardiac timing analysis. ECG R-peak timing is used as the beat alignment anchor because it provides a stable electrical marker. SCG AO/AC fiducial points are used as reference timing for comparison with radar-derived morphology. Radar AO/AC landmarks are candidate events inferred from radar beat morphology, not direct aortic valve opening or closure imaging. Radar AO and Radar AC may show different distribution characteristics because early systolic upstroke-like morphology and late systolic notch/inflection morphology can differ in robustness and timing spread. Independent modalities such as echocardiography, ICG, or PCG are required for absolute valve event validation.
 
+## Documentation Map
+
+| Document | Description |
+|---|---|
+| [Algorithm Details](docs/algorithm_details.md) | End-to-end processing narrative |
+| [Signal Processing Formulas](docs/signal_processing_formulas.md) | Equations used in the pipeline |
+| [Detector Methods](docs/detector_methods.md) | AO/AC detector ensemble explanation |
+| [Filtering Methods](docs/filtering_methods.md) | Filters and artifact suppression |
+| [Radar Processing](docs/radar_processing.md) | FMCW/radar cardiac signal extraction |
+| [ECG Processing](docs/ecg_processing.md) | ECG parsing, filtering, R/Q/T landmarks |
+| [SCG Processing](docs/scg_processing.md) | SCG parsing and fiducial reference |
+| [Beat Alignment and CTI](docs/beat_alignment_and_cti.md) | Beat slicing and timing metrics |
+| [SQI and Rejection](docs/sqi_and_rejection.md) | Beat quality metrics |
+| [Configuration Reference](docs/configuration_reference.md) | Runtime dataclass defaults |
+| [Code Reference](docs/code_reference.md) | Extracted class/function reference |
+| [Firmware Guide](docs/firmware_guide.md) | STM32 and ESP32 firmware notes |
+| [Output Reference](docs/output_reference.md) | Output files and paper export |
+| [References](docs/references.md) | Literature basis |
+
+![AO/AC detector fusion infographic](docs/figures/detector_fusion_example.svg)
+
+*Synthetic infographic showing detector candidate overlay and median/confidence-style fusion. It illustrates the candidate-timing concept without using raw biosignal data or copied paper figures.*
+
 ## Documentation Links
 
 - GitHub Pages: <https://tontonjeong.github.io/fmcw-radar-aoac-cardiac-analysis/>
