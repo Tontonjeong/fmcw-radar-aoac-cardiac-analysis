@@ -1,24 +1,16 @@
-# STM32 ECG Project Archive
+# STM32 ECG Project Notes
 
-The STM32 ECG firmware project was provided as `ECG.zip` during repository preparation.
-
-Because the GitHub connector used in this session supports reliable UTF-8 text-file creation but does not provide a direct large binary upload workflow, the STM32 project archive should be uploaded manually if it needs to be distributed in this repository.
-
-Recommended target path:
+The STM32 ECG firmware project is included in unpacked STM32CubeIDE form under:
 
 ```text
-firmware/stm32_ecg/ECG_project.zip
+firmware/stm32_ecg/ECG_project/
 ```
 
-Before uploading, verify that:
+Before redistributing or modifying the project, verify that:
 
 - STMicroelectronics HAL/CMSIS license files are preserved.
 - Build artifacts such as `Debug/`, `Release/`, `*.elf`, `*.bin`, `*.hex`, and `*.map` are excluded if not needed.
 - No local user paths or private metadata are included.
 - No biosignal data files are included.
 
-If the project is unpacked instead of uploaded as a ZIP, place it under:
-
-```text
-firmware/stm32_ecg/ECG_project/
-```
+If a compressed archive is created later, keep it out of the default repository unless license, size, and metadata checks have been completed.
