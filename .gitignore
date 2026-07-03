@@ -34,6 +34,8 @@ results/*
 
 # To include selected documentation figures, add explicit exceptions such as:
 # !docs/figures/example_pipeline.png
+!docs/figures/
+!docs/figures/**/*.png
 
 # OS / IDE
 .DS_Store

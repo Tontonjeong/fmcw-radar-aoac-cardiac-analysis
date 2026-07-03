@@ -1,4 +1,4 @@
-# Analysis of Aortic Valve Opening and Closure Using Cardiac Signals Acquired by Non-Contact FMCW Radar
+﻿# Analysis of Aortic Valve Opening and Closure Using Cardiac Signals Acquired by Non-Contact FMCW Radar
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB)
 ![Research Prototype](https://img.shields.io/badge/Research-Prototype-6A5ACD)
@@ -29,6 +29,12 @@ This repository contains research prototype code and firmware documentation for 
 | Affiliation | Dankook University |
 | Topic | FMCW Radar, ECG, SCG, AO/AC timing, cardiac mechanical event analysis |
 
+## Documentation
+
+- GitHub Pages entry: [`docs/index.md`](docs/index.md)
+- STM32F411 ECG firmware configuration: [`docs/stm32_f411_ecg_firmware.md`](docs/stm32_f411_ecg_firmware.md)
+- Python signal processing algorithms: [`docs/python_algorithms.md`](docs/python_algorithms.md)
+
 ## Repository Structure
 
 ```text
@@ -55,7 +61,10 @@ This repository contains research prototype code and firmware documentation for 
 │           └── STM32CubeIDE project files
 ├── docs/
 │   ├── index.md
+│   ├── stm32_f411_ecg_firmware.md
+│   ├── python_algorithms.md
 │   └── figures/
+│       └── stm32_f411/
 ├── examples/
 │   ├── config_example.yaml
 │   └── serial_output_examples.md
@@ -79,43 +88,44 @@ flowchart TD
 
 | Component | Role | Output |
 |---|---|---|
-| STM32 ECG module | ECG ADC acquisition | sample_index, ADCValue, Smooth_ECG |
+| STM32F411 ECG module | ECG ADC acquisition | sample_index, ADCValue, Smooth_ECG |
 | ESP32 + MPU6050 | SCG acquisition | sample_index, t_ms, ax_g, ay_g, az_g, gx_dps, gy_dps, gz_dps |
 | Infineon BGT60TR13C FMCW Radar | Non-contact chest micro-motion acquisition | radar frame / phase displacement |
 | PC | Data acquisition and analysis | CSV, JSON, figures |
 
-## Firmware
+## STM32F411 ECG Firmware
 
-### STM32 ECG Firmware
+| Item | Setting |
+|---|---|
+| MCU | STM32F411RETx, LQFP64 |
+| ADC input | ADC1_IN0 on PA0 |
+| UART | USART2, PA2 TX, PA3 RX |
+| Timer | TIM1 update interrupt |
+| Timer parameters | Prescaler 9999, counter period 99 |
+| Clock | PLLCLK, SYSCLK/HCLK 100 MHz |
+| Baudrate | 115200 |
+| Sampling rate | 100 Hz target |
+| Output CSV | sample_index,ADCValue,Smooth_ECG |
+| MCU smoothing | 5-sample moving average |
 
-- STM32CubeIDE project
-- ADC1_IN0 PA0 input
-- USART2 serial output
-- TIM1 interrupt based 100 Hz sampling
-- Output CSV format:
+See [`docs/stm32_f411_ecg_firmware.md`](docs/stm32_f411_ecg_firmware.md) for CubeMX screenshots and detailed embedded settings.
 
-```text
-sample_index,ADCValue,Smooth_ECG
-```
-
-- Moving average smoothing window = 5
-- Baudrate = 115200
-- User must confirm ADC pin, timer clock, UART port, and board configuration before flashing.
-
-### ESP32 MPU6050 SCG Firmware
+## ESP32 MPU6050 SCG Firmware
 
 - Arduino sketch
 - MPU6050 over I2C
 - SDA GPIO21, SCL GPIO22
 - 100 Hz sampling
-- Output CSV format:
+- Baudrate 115200
+- Startup bias calibration included
+- Output CSV: `sample_index,t_ms,ax_g,ay_g,az_g,gx_dps,gy_dps,gz_dps`
+- Close Arduino Serial Monitor before running the Python acquisition script.
 
-```text
-sample_index,t_ms,ax_g,ay_g,az_g,gx_dps,gy_dps,gz_dps
-```
+## Python Algorithm Summary
 
-- Initial bias calibration included
-- User must close Arduino Serial Monitor before running the Python acquisition script.
+The Python script includes serial acquisition, ECG preprocessing, robust R-peak detection, SCG reference fiducial generation, BGT60TR13C radar range FFT/ROI phase extraction, respiration/motion cancellation, beat-wise alignment, morphology-based AO/AC candidate detection, SQI rejection, CTI calculation, and paper-ready export.
+
+See [`docs/python_algorithms.md`](docs/python_algorithms.md) for a detector-by-detector explanation.
 
 ## Software Requirements
 
@@ -164,52 +174,23 @@ Set local serial ports, output paths, and hardware configuration before acquisit
 | RadarConfig | FMCW radar chirp/frame configuration |
 | AnalysisConfig | Beat slicing and AO/AC detection parameters |
 
-See `examples/config_example.yaml` for a configuration template. Update the values for the local PC, connected board ports, and radar setup before running acquisition.
+See `examples/config_example.yaml` for a configuration template.
 
 ## Usage
-
-Current script defaults are edited in the config section near the top of the Python file:
 
 ```bash
 python src/ecg_scg_radar_aoac_analysis.py
 ```
 
-If argparse-based configuration loading is added later, this repository includes a ready template:
+If argparse-based configuration loading is added later, the template can be used as:
 
 ```bash
 python src/ecg_scg_radar_aoac_analysis.py --config examples/config_example.yaml
 ```
 
-## Serial Output Formats
-
-STM32 ECG:
-
-```csv
-sample_index,ADCValue,Smooth_ECG
-0,1870,1860
-1,1872,1861
-```
-
-ESP32 MPU6050 SCG:
-
-```csv
-sample_index,t_ms,ax_g,ay_g,az_g,gx_dps,gy_dps,gz_dps
-0,0,0.001234,-0.002345,0.003456,0.1234,-0.2345,0.3456
-```
-
-Additional examples are in `examples/serial_output_examples.md`.
-
 ## Output
 
-The analysis pipeline can generate:
-
-- raw ECG/SCG/Radar acquisition logs
-- beat-wise AO/AC timing CSV
-- CTI result table
-- JSON summary files
-- signal quality metrics
-- paper-ready figures
-- `paper_export` directory
+The analysis pipeline can generate raw acquisition logs, beat-wise AO/AC timing CSV files, CTI result tables, JSON summaries, signal quality metrics, paper-ready figures, and a `paper_export` directory.
 
 Raw biosignal data may contain sensitive personal information and research data. It is excluded from this repository by default and should not be publicly committed without appropriate consent and anonymization.
 
@@ -263,15 +244,6 @@ $$
 }
 ```
 
-## Repository Status
-
-- Research prototype
-- Single-subject or limited experimental setting if applicable
-- Further validation required with independent reference modalities
-- Not intended for clinical deployment
-
 ## License
 
-MIT License applies to the original analysis code and documentation unless otherwise stated.
-
-STM32 HAL/CMSIS components remain under their original STMicroelectronics license terms. Third-party SDKs such as `ifxradarsdk` follow their own license terms. See `THIRD_PARTY_LICENSES.md` for details.
+MIT License applies to the original analysis code and documentation unless otherwise stated. STM32 HAL/CMSIS components remain under their original STMicroelectronics license terms. Third-party SDKs such as `ifxradarsdk` follow their own license terms. See `THIRD_PARTY_LICENSES.md` for details.

@@ -1,4 +1,4 @@
-# Analysis of Aortic Valve Opening and Closure Using Cardiac Signals Acquired by Non-Contact FMCW Radar
+﻿# Analysis of Aortic Valve Opening and Closure Using Cardiac Signals Acquired by Non-Contact FMCW Radar
 
 This project organizes research prototype code for analyzing aortic valve opening and closure timing candidates from ECG-aligned SCG and non-contact FMCW radar cardiac motion signals.
 
@@ -19,13 +19,32 @@ flowchart LR
     Align --> Compare --> CTI["CTI Analysis"] --> Export["Paper-ready Outputs"]
 ```
 
+## Documentation Pages
+
+- [STM32F411 ECG firmware configuration](stm32_f411_ecg_firmware.md)
+- [Python signal processing algorithms](python_algorithms.md)
+
 ## Signal Acquisition Overview
 
 | Signal | Hardware | Sampling/Output |
 |---|---|---|
-| ECG | STM32 ECG module | 100 Hz target UART CSV |
+| ECG | STM32F411 ECG module | 100 Hz target UART CSV |
 | SCG | ESP32 + MPU6050 | 100 Hz USB Serial CSV |
 | Radar | Infineon BGT60TR13C | FMCW frame acquisition and phase displacement extraction |
+
+## STM32F411 ECG Configuration Snapshot
+
+| Item | Setting |
+|---|---|
+| MCU | STM32F411RETx, LQFP64 |
+| ADC input | ADC1_IN0 on PA0 |
+| UART | USART2 TX PA2, RX PA3 |
+| Timer | TIM1 update interrupt |
+| Timer parameters | Prescaler 9999, period 99 |
+| System clock | PLLCLK, 100 MHz SYSCLK/HCLK |
+| Target ECG sampling | 100 Hz |
+
+![STM32F411 CubeMX pinout](figures/stm32_f411/01_pinout_overview.png)
 
 ## Firmware Overview
 
