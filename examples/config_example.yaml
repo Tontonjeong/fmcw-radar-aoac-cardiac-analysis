@@ -1,0 +1,21 @@
+ecg:
+  port: "COMx"
+  baudrate: 115200
+  fs_hint_hz: 100.0
+  input_format: "sample_index,ADCValue,Smooth_ECG"
+
+scg:
+  enabled: true
+  port: "COMx"
+  baudrate: 115200
+  fs_hint_hz: 100.0
+  input_format: "sample_index,t_ms,ax_g,ay_g,az_g,gx_dps,gy_dps,gz_dps"
+
+radar:
+  device: "Infineon BGT60TR13C"
+  frame_rate_hz: 100.0
+  start_freq_hz: 58e9
+  end_freq_hz: 63.5e9
+
+output:
+  base_dir: "./results"
